@@ -3,7 +3,7 @@ import common
 import heroes
 import annotations
 import upload
-import object_detection.tf_objectdetection
+import object_detection.tf_objectdetection as tf_objectdetection
 
 print('Loading function')
 

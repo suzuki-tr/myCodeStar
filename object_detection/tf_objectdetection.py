@@ -2,12 +2,12 @@ import sys
 import os
 import common
 import zipfile
+import base64
 bucket = 'samplebucket-suzuki'
 
 def myimport(zipkey):
   temppath = os.path.join('/tmp', os.path.basename(zipkey))
   tempdir = os.path.splitext(temppath)[0]
-  print(temppath,',',tempdir)
   if not os.path.exists(tempdir):
     print('downloading ', zipkey)
     os.makedirs(tempdir)
@@ -18,9 +18,7 @@ def myimport(zipkey):
 
 myimport('lib/numpy.zip')
 import numpy as np
-#myimport('lib/google.zip')
-#myimport('lib/absl.zip')
-myimport('lib/tf18.zip')
+myimport('lib/tensorflow.zip')
 import tensorflow as tf
 myimport('lib/PIL.zip')
 import PIL.Image as Image
@@ -29,15 +27,25 @@ sys.path.append(".")
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
 
-
 threshold = float(os.environ.get('threshold','0.08'))
+
+MODEL_INFO = {
+  'bucket'      : 'samplebucket-suzuki',
+  'model_key'   : os.environ.get('model_key','lib/object_detection_model/mahjong/ssdlite_mobilenet_v2.pb'),
+  'label_key'   : os.environ.get('label_key','lib/object_detection_model/mahjong/label_map.pbtxt'),
+  'model_path'  : '/tmp/frozen_inference_graph.pb',
+  'label_path'  : '/tmp/label_map.pbtxt',
+  'num_class'   : int(os.environ.get('num_class','40'))
+}
+common.download_s3file(bucket,MODEL_INFO['model_key'],MODEL_INFO['model_path'])
+common.download_s3file(bucket,MODEL_INFO['label_key'],MODEL_INFO['label_path'])
 
 class image_classifier():
     def __init__(self, model_info):
         detection_graph = tf.Graph()
         with detection_graph.as_default():
           od_graph_def = tf.GraphDef()
-          with tf.gfile.GFile(model_info['model_path'], 'rb') as fid:
+          with tf.gfile.GFile(MODEL_INFO['model_path'], 'rb') as fid:
             serialized_graph = fid.read()
             od_graph_def.ParseFromString(serialized_graph)
             tf.import_graph_def(od_graph_def, name='')
@@ -105,8 +113,10 @@ class image_classifier():
           results.append(result)
         
         return results
-        
-        
+
+classifier = image_classifier(MODEL_INFO)
+
+  
 def handler(event):
     
     httpMethod = event['httpMethod']
@@ -118,9 +128,15 @@ def handler(event):
     response = ''
     if httpMethod == 'POST':
         imageBody = base64.b64decode(event["body"])
-        tmp_file = 'tmp/target.jpg'
+        tmp_file = '/tmp/target.jpg'
         with open(tmp_file,"wb") as f:
           f.write(imageBody)
+        
+        #im = Image.open(tmp_file)
+        #print('image size:{}, mode:{}, format:{}'.format(im.size,im.mode,im.format))
+        results = classifier.run_inference_file(tmp_file)
+        print(results)
+        response = results
 
         response = common.create_response(common.OK, response)
     else:

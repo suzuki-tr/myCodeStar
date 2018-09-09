@@ -31,6 +31,8 @@ Resources:
       Role: 'arn:aws:iam::527443923623:role/myAdminRole'
       CodeUri: ./
       ReservedConcurrentExecutions: 1
+      MemorySize: 2048
+      Timeout: 30
       Events:
         AnyEvent:
           Type: Api
