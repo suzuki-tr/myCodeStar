@@ -25,6 +25,10 @@ def create_response(code, body=None):
     
 #############
 # S3 Accessor
+def download_s3file(bucket,key,localpath):
+    s3.Bucket(bucket).download_file(key,localpath)
+    return localpath
+    
 def get_s3text(bucket,key):
     obj = s3.Object(bucket, key)
     response = obj.get()

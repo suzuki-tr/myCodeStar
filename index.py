@@ -3,6 +3,7 @@ import common
 import heroes
 import annotations
 import upload
+import object_detection.tf_objectdetection
 
 print('Loading function')
 
@@ -20,6 +21,8 @@ def handler(event, context):
         response = heroes.handler(event)
     elif resourcePath.startswith('/annotations'):
         response = annotations.handler(event)
+    elif resourcePath.startswith('/objdetect'):
+        response = tf_objectdetection.handler(event)
     elif resourcePath.startswith('/upload'):
         response = upload.handler(event)
     elif resourcePath.startswith('/keepalive'):
