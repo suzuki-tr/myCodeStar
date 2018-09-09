@@ -1,0 +1,12 @@
+{
+    "DeploymentMethod": "cloudformation",
+    "Functions": {
+        "myFunction": {
+            "PhysicalId": {
+                "ap-northeast-1": "cloud9-myCodeStar-myFunction-16MZZH9Y5KZF4"
+            }
+        }
+    },
+    "RestApiId": "xz9jpu7y6d",
+    "StackName": "cloud9-myCodeStar"
+}
