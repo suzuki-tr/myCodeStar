@@ -22,7 +22,7 @@ phases:
 
   post_build:
     commands:
-      - aws --region ap-northeast-1 cloudformation deploy --template template-export.yml --stack-name cloud9-myCodeStar
+      - aws --region ap-northeast-1 cloudformation deploy --template-file template-export.yml --stack-name cloud9-myCodeStar
 
 artifacts:
   type: zip
