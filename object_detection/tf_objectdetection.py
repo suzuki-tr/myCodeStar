@@ -1,3 +1,4 @@
+print('tf_objectdetection loading...')
 import sys
 import os
 import common
