@@ -16,16 +16,16 @@ def myimport(zipkey):
       existing_zip.extractall(tempdir)
   sys.path.append(tempdir)
 
-myimport('lib/numpy.zip')
-import numpy as np
-myimport('lib/tensorflow.zip')
-import tensorflow as tf
-myimport('lib/PIL.zip')
-import PIL.Image as Image
-
-sys.path.append(".")
-from object_detection.utils import ops as utils_ops
-from object_detection.utils import label_map_util
+def module_import():
+  myimport('lib/numpy.zip')
+  import numpy as np
+  myimport('lib/tensorflow.zip')
+  import tensorflow as tf
+  myimport('lib/PIL.zip')
+  import PIL.Image as Image
+  sys.path.append(".")
+  from object_detection.utils import ops as utils_ops
+  from object_detection.utils import label_map_util
 
 threshold = float(os.environ.get('threshold','0.08'))
 
@@ -37,8 +37,9 @@ MODEL_INFO = {
   'label_path'  : '/tmp/label_map.pbtxt',
   'num_class'   : int(os.environ.get('num_class','40'))
 }
-common.download_s3file(bucket,MODEL_INFO['model_key'],MODEL_INFO['model_path'])
-common.download_s3file(bucket,MODEL_INFO['label_key'],MODEL_INFO['label_path'])
+def model_download():
+  common.download_s3file(bucket,MODEL_INFO['model_key'],MODEL_INFO['model_path'])
+  common.download_s3file(bucket,MODEL_INFO['label_key'],MODEL_INFO['label_path'])
 
 class image_classifier():
     def __init__(self, model_info):
@@ -114,7 +115,14 @@ class image_classifier():
         
         return results
 
-classifier = image_classifier(MODEL_INFO)
+classifier = None
+
+def initializer():
+  if not os.path.exists(MODEL_INFO['model_path']):
+    model_download()
+  module_import()
+  if classifier == None:
+    classifier = image_classifier(MODEL_INFO)
 
   
 def handler(event):

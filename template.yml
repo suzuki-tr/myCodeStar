@@ -26,6 +26,7 @@ Resources:
   myFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: myFunction
       Handler: index.handler
       Runtime: python3.6
       Role: 'arn:aws:iam::527443923623:role/myAdminRole'

@@ -1,17 +1,46 @@
-import unittest
+import sys
+sys.path.append('.')
 import index
 
+# mock
+current_module = sys.modules[__name__]
 
-class TestHandlerCase(unittest.TestCase):
+def test_index_handler_heroes():
+    event = {}
+    event['httpMethod'] = 'GET'
+    event['path'] = '/heroes'
+    event['queryStringParameters'] = {}
+    response = index.handler(event,None)
+    print(response)
+    assert response['statusCode'] == 200
+    
+    
+def test_index_handler_annotations():
+    event = {}
+    event['httpMethod'] = 'GET'
+    event['path'] = '/annotations'
+    event['queryStringParameters'] = {}
+    response = index.handler(event,None)
+    print(response)
+    assert response['statusCode'] == 200
+    
 
-    def test_response(self):
-        print("testing response.")
-        result = index.handler(None, None)
-        print(result)
-        self.assertEqual(result['statusCode'], 200)
-        self.assertEqual(result['headers']['Content-Type'], 'application/json')
-        self.assertIn('Hello World', result['body'])
+# mock case
+import object_detection.tf_objectdetection as tf_objectdetection
+def test_index_handler_objdetect(monkeypatch):
+    
+    # mock function
+    def dummy_function(arg):
+        return {'statusCode':200}
 
-
-if __name__ == '__main__':
-    unittest.main()
+    # replace to mock        
+    monkeypatch.setattr(tf_objectdetection,
+                        'handler',
+                        dummy_function)
+    event = {}
+    event['httpMethod'] = 'GET'
+    event['path'] = '/objdetect'
+    event['queryStringParameters'] = {}
+    response = index.handler(event,None)
+    print(response)
+    assert response['statusCode'] == 200
