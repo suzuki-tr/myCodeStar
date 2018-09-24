@@ -13,6 +13,7 @@ phases:
   pre_build:
     commands:
       - pwd
+      - export PYTHONPATH=$PYTHONPATH:pwd
       - ls -la
       - echo $PATH
       - echo $PYTHONPATH
