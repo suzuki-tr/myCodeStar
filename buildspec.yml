@@ -16,7 +16,7 @@ phases:
       - ls -la
       - echo $PATH
       - echo $PYTHONPATH
-      - pytest tests -v
+      - python -m pytest tests -v
   
   build:
     commands:
