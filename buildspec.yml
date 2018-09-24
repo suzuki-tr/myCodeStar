@@ -12,10 +12,6 @@ phases:
 
   pre_build:
     commands:
-      - pwd
-      - ls -la
-      - echo $PATH
-      - echo $PYTHONPATH
       - python -m pytest tests -v
   
   build:

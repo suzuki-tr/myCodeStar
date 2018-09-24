@@ -30,7 +30,7 @@ Resources:
       Handler: index.handler
       Runtime: python3.6
       Role: 'arn:aws:iam::527443923623:role/myAdminRole'
-      CodeUri: ./
+      CodeUri: src
       ReservedConcurrentExecutions: 1
       MemorySize: 2048
       Timeout: 30
