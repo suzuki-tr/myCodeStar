@@ -1,0 +1,6 @@
+boto3
+flake8
+pytest
+pytest-html
+coverage
+
