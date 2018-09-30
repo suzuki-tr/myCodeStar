@@ -5,7 +5,7 @@ phases:
     commands:
 
       # Upgrade AWS CLI to the latest version
-      - pip install --upgrade awscli
+      - pip install --force-reinstall --upgrade awscli
       - pip install boto3
       - pip install pytest
       - 
