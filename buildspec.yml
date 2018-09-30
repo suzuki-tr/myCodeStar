@@ -17,14 +17,12 @@ phases:
   
   build:
     commands:
-    
       # Use AWS SAM to package the application by using AWS CloudFormation
       #- aws --region ap-northeast-1 cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
 
   post_build:
     commands:
-    
       #- aws --region ap-northeast-1 cloudformation deploy --template-file template-export.yml --stack-name cloud9-myCodeStar
       - aws cloudformation deploy --template-file template-export.yml --stack-name cloud9-myCodeStar
 
