@@ -56,6 +56,7 @@ Suzuki:~/environment/myCodeStar (master) $
 
 ## Coverage
 
+report
 ~~~
 Suzuki:~/environment/myCodeStar (master) $ coverage report --omit='/usr/*,*/site-packages/*,*/dist-packages*,tests/*' -m
 Name                                         Stmts   Miss  Cover   Missing
@@ -70,4 +71,9 @@ src/upload.py                                   22     14    36%   13-29
 --------------------------------------------------------------------------
 TOTAL                                          320    189    41%
 Suzuki:~/environment/myCodeStar (master) $ 
+~~~
+
+export to html
+~~~
+$ coverage html --omit='/usr/*,*/site-packages/*,*/dist-packages*,tests/*'
 ~~~

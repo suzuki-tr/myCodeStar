@@ -15,18 +15,21 @@ def myimport(zipkey):
     common.download_s3file(bucket,zipkey,temppath)
     with zipfile.ZipFile(temppath) as existing_zip:
       existing_zip.extractall(tempdir)
+  else:
+    print('already exist ',zipkey)
   sys.path.append(tempdir)
 
-def module_import():
-  myimport('lib/numpy.zip')
-  import numpy as np
-  myimport('lib/tensorflow.zip')
-  import tensorflow as tf
-  myimport('lib/PIL.zip')
-  import PIL.Image as Image
-  sys.path.append(".")
-  from object_detection.utils import ops as utils_ops
-  from object_detection.utils import label_map_util
+#def module_import():
+print('modules importing...')
+myimport('lib/numpy.zip')
+import numpy as np
+myimport('lib/tensorflow.zip')
+import tensorflow as tf
+myimport('lib/PIL.zip')
+import PIL.Image as Image
+sys.path.append(".")
+from object_detection.utils import ops as utils_ops
+from object_detection.utils import label_map_util
 
 threshold = float(os.environ.get('threshold','0.08'))
 
@@ -39,6 +42,7 @@ MODEL_INFO = {
   'num_class'   : int(os.environ.get('num_class','40'))
 }
 def model_download():
+  print('model downloading...')
   common.download_s3file(bucket,MODEL_INFO['model_key'],MODEL_INFO['model_path'])
   common.download_s3file(bucket,MODEL_INFO['label_key'],MODEL_INFO['label_path'])
 
@@ -116,15 +120,20 @@ class image_classifier():
         
         return results
 
-classifier = None
+print('module preparing...')
+model_download()
+#module_import()
+classifier = image_classifier(MODEL_INFO)
 
+'''
+classifier = None
 def initializer():
   if not os.path.exists(MODEL_INFO['model_path']):
     model_download()
   module_import()
   if classifier == None:
     classifier = image_classifier(MODEL_INFO)
-
+'''
   
 def handler(event):
     

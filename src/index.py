@@ -29,7 +29,6 @@ def handler(event, context):
         response = common.create_response(common.OK, 'keep alive')
     elif resourcePath.startswith('/warmup'):
         response = common.create_response(common.OK, 'warmup')
-        
     else :
         response = common.create_response(common.BAD_REQUEST)
         

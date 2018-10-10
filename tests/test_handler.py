@@ -6,6 +6,7 @@ import index
 
 # mock
 current_module = sys.modules[__name__]
+print('current_module:',current_module)
 
 def test_index_handler_heroes():
     event = {}
@@ -28,21 +29,18 @@ def test_index_handler_annotations():
     
 
 # mock case
-import object_detection.tf_objectdetection as tf_objectdetection
-def test_index_handler_objdetect(monkeypatch):
-    
-    # mock function
-    def dummy_function(arg):
-        return {'statusCode':200}
-
-    # replace to mock        
-    monkeypatch.setattr(tf_objectdetection,
-                        'handler',
-                        dummy_function)
+from unittest.mock import patch
+def test_index_handler_objdetect_post():
     event = {}
-    event['httpMethod'] = 'GET'
+    event['httpMethod'] = 'POST'
     event['path'] = '/objdetect'
     event['queryStringParameters'] = {}
-    response = index.handler(event,None)
-    print(response)
-    assert response['statusCode'] == 200
+    event['body'] = {}
+    
+    with patch('base64.b64decode') as mock_base64decode:
+        mock_base64decode.return_value = b'd\x00\xb0\x04'
+        with patch('object_detection.tf_objectdetection.image_classifier.run_inference_file') as mock_run_inference_file:
+            mock_run_inference_file.return_value = {'class':'1.0'}
+            response = index.handler(event,None)
+            print(response)
+            assert response['statusCode'] == 200
