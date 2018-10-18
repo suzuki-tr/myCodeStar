@@ -1,27 +1,37 @@
 import json
+import logging
 import common
 import heroes
 import annotations
 import upload
-import object_detection.tf_objectdetection as tf_objectdetection
+
 
 print('Loading function')
+
+#logger = logging.getLogger(__name__)
+#logger.setLevel(logging.DEBUG)
+logadapter = common.mylogger(__name__)
 
 #############
 # Handler
 def handler(event, context):
-    print("request: " + json.dumps(event))#, indent=2))
+
+
+    logadapter.info('start handler')
+    logadapter.set_extra({'id':'0001'})
+    logadapter.info("request:{}".format(json.dumps(event)))
 
     httpMethod = event['httpMethod']
     resourcePath = event.get('path','')
     queryStrings = event.get('queryStringParameters','')
-    print('{}:{}/param:{}'.format(httpMethod,resourcePath,queryStrings))
+    logadapter.info('{}:{}/param:{}'.format(httpMethod,resourcePath,queryStrings))
 
     if resourcePath.startswith('/heroes'):
         response = heroes.handler(event)
     elif resourcePath.startswith('/annotations'):
         response = annotations.handler(event)
     elif resourcePath.startswith('/objdetect'):
+        import object_detection.tf_objectdetection as tf_objectdetection
         response = tf_objectdetection.handler(event)
     elif resourcePath.startswith('/upload'):
         response = upload.handler(event)
@@ -31,6 +41,8 @@ def handler(event, context):
         response = common.create_response(common.OK, 'warmup')
     else :
         response = common.create_response(common.BAD_REQUEST)
+        logadapter.error('bad request')
         
-    print(response)
+    logadapter.info("response:{}".format(response))
+    logadapter.info('end handler')
     return response

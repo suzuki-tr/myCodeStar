@@ -1,5 +1,7 @@
 import json
 import boto3
+import logging
+#import logging.basicConfig
 
 s3 = boto3.resource('s3')
 client = boto3.client('s3')
@@ -86,4 +88,27 @@ def get_s3list(bucket,prefix,postfix=''):
             continue
         keylist.append(content['Key'].replace(prefix,''))
     return keylist
+
+
+## Logger
+## https://docs.python.jp/3/library/logging.html
+## https://stackoverflow.com/questions/11820338/replace-default-handler-of-python-logger
+
+class CustomAdapter(logging.LoggerAdapter):
+    def set_extra(self, extra):
+        self.extra = extra
+    def process(self, msg, kwargs):
+        return '[%s] %s' % (self.extra['id'], msg), kwargs
+
+def mylogger(name):
+    #print('logger name:',name)
+    logger = logging.getLogger(name)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('[%(levelname)s] %(asctime)s %(name)s %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
+    return CustomAdapter(logger, {'id':'-'})
 

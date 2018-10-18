@@ -29,6 +29,7 @@ def test_index_handler_annotations():
     
 
 # mock case
+# https://docs.python.jp/3/library/unittest.mock-examples.html
 from unittest.mock import patch
 def test_index_handler_objdetect_post():
     event = {}
