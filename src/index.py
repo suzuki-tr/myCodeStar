@@ -1,21 +1,23 @@
+import os
 import json
 import logging
+
 import common
 import heroes
 import annotations
 import upload
-
+import sys
+sys.path.append('awslib')
+from aws_xray_sdk.core import xray_recorder
 
 print('Loading function')
 
-#logger = logging.getLogger(__name__)
-#logger.setLevel(logging.DEBUG)
 logadapter = common.mylogger(__name__)
 
 #############
 # Handler
 def handler(event, context):
-
+    xray_recorder.begin_subsegment(os.environ.get('AWS_LAMBDA_FUNCTION_NAME'))
 
     logadapter.info('start handler')
     logadapter.set_extra({'id':'0001'})
@@ -45,4 +47,6 @@ def handler(event, context):
         
     logadapter.info("response:{}".format(response))
     logadapter.info('end handler')
+    
+    xray_recorder.end_subsegment()
     return response
