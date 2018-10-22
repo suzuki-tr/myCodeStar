@@ -45,3 +45,24 @@ def test_index_handler_objdetect_post():
             response = index.handler(event,None)
             print(response)
             assert response['statusCode'] == 200
+
+def test_dynamotest():
+    event = {}
+    event['httpMethod'] = 'GET'
+    event['path'] = '/dynamo'
+    event['queryStringParameters'] = {}
+    event['body'] = {}
+    with patch('boto3.resource') as boto3resource:
+        class tbl():
+            def scan(self,**params):
+                response = {'items': {'result':'value'}}
+                return response
+        class dyn():
+            def Table(self):
+                table = tbl
+                return table
+        boto3resource.return_value = dyn
+        response = index.handler(event,None)
+        print(response)
+        assert response['items']['result'] == 'value'
+        

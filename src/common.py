@@ -89,6 +89,20 @@ def get_s3list(bucket,prefix,postfix=''):
         keylist.append(content['Key'].replace(prefix,''))
     return keylist
 
+from boto3.dynamodb.conditions import Key, Attr
+def dynamotest():
+    #client = boto3.client('dynamodb')
+    #tables = client.list_tables()
+    #print(tables)
+    dynamo = boto3.resource('dynamodb')
+    print('type(dynamo)',type(dynamo))
+    dbTable = dynamo.Table('sample-table')
+    print('type(dbTable)',type(dbTable))
+    print('dir(dbTable)',dir(dbTable))
+    params={}
+    res = dbTable.scan(params)
+    print(res)
+    return res
 
 ## Logger
 ## https://docs.python.jp/3/library/logging.html
