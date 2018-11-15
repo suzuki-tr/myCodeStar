@@ -18,8 +18,8 @@ logadapter = common.mylogger(__name__)
 # Handler
 def handler(event, context):
     
-    xray_recorder.begin_segment(__name__)
-    xray_recorder.begin_subsegment('preprocess')
+    #xray_recorder.begin_segment(__name__)
+    #xray_recorder.begin_subsegment('preprocess')
     logadapter.info(__name__)
     logadapter.set_extra({'id':'0001'})
     logadapter.info("request:{}".format(json.dumps(event)))
@@ -28,12 +28,12 @@ def handler(event, context):
     resourcePath = event.get('path','')
     queryStrings = event.get('queryStringParameters','')
     logadapter.info('{}:{}/param:{}'.format(httpMethod,resourcePath,queryStrings))
-    xray_recorder.end_subsegment()
+    #xray_recorder.end_subsegment()
 
     if resourcePath.startswith('/heroes'):
-        xray_recorder.begin_subsegment('heroes')
+        #xray_recorder.begin_subsegment('heroes')
         response = heroes.handler(event)
-        xray_recorder.end_subsegment()
+        #xray_recorder.end_subsegment()
     elif resourcePath.startswith('/annotations'):
         response = annotations.handler(event)
     elif resourcePath.startswith('/objdetect'):
@@ -54,5 +54,5 @@ def handler(event, context):
     logadapter.info("response:{}".format(response))
     logadapter.info('end handler')
     
-    xray_recorder.end_segment()
+    #xray_recorder.end_segment()
     return response

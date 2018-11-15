@@ -89,19 +89,23 @@ def get_s3list(bucket,prefix,postfix=''):
         keylist.append(content['Key'].replace(prefix,''))
     return keylist
 
+
 from boto3.dynamodb.conditions import Key, Attr
+dynamo = boto3.resource('dynamodb') # it's difficult to create test code if global instance
 def dynamotest():
-    #client = boto3.client('dynamodb')
-    #tables = client.list_tables()
-    #print(tables)
-    dynamo = boto3.resource('dynamodb')
-    print('type(dynamo)',type(dynamo))
     dbTable = dynamo.Table('sample-table')
-    print('type(dbTable)',type(dbTable))
-    print('dir(dbTable)',dir(dbTable))
+    items = []
     params={}
     res = dbTable.scan(params)
     print(res)
+    items.extend(res.get('items'))
+    while res.get('flag') == 'next':
+        params.update({'flag':res.get('flag')})
+        res = dbTable.scan(params)
+        print(res)
+        items.extend(res.get('items'))
+
+    print(items)
     return res
 
 ## Logger
