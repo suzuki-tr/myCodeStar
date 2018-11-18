@@ -1,0 +1,117 @@
+swagger: "2.0"
+info:
+  description: "OCR"
+  version: "1.0"
+  title: "OCR APIs"
+host: "ocr.com"
+basePath: "/apis/v1"
+tags:
+- name: "Tenant"
+  description: "tenant data access"
+- name: "Task"
+  description: "task controle"
+schemes:
+- "https"
+paths:
+  /tenant:
+    get:
+      tags:
+      - "Tenant"
+      summary: "Get Tenant list"
+      description: "get specified tenant data"
+      operationId: "getTenants"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+        405:
+          description: "Invalid input"
+  /tenant/{tenantId}:
+    parameters:
+    - name: "tenantId"
+      in: "path"
+      description: "tenant id"
+      required: true
+      type: "string"
+      format: "uuid"
+    post:
+      tags:
+      - "Tenant"
+      summary: "Create Tenant list"
+      description: "get specified tenant data"
+      operationId: "createTenant"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "tenant"
+        description: "tenant data"
+        required: true
+        schema:
+          $ref: "#/definitions/tenant"
+      responses:
+        200:
+          description: "Success"
+        405:
+          description: "Invalid input"
+    put:
+      tags:
+      - "Tenant"
+      summary: "Update tesnant"
+      description: "update specfied tenant data to supplied data."
+      operationId: "updateTenant"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "tenant"
+        description: "tenant data"
+        required: true
+        schema:
+          $ref: "#/definitions/tenant"
+      responses:
+        200:
+          description: "Success"
+        404:
+          description: "Not found"
+        405:
+          description: "Invalid input"
+    options:
+      summary: "options"
+      operationId: "options"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+definitions:
+  tenant:
+    type: "object"
+    properties:
+      formType:
+        type: "array"
+        items:
+          $ref: "#/definitions/formType"
+      batch:
+        type: "array"
+        items:
+          $ref: "#/definitions/form"
+  formType:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        format: "int64"
+  form:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
